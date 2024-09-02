@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  playwright:
+    build: .
+    container_name: playwright
+    volumes:
+      - .:/playwright-tests
+    command: ["npm", "test"]

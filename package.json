@@ -1,0 +1,29 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "lint": "npx eslint . --c ./eslint.config.mjs --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@playwright/test": "^1.46.1",
+    "@types/node": "^22.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "eslint": "^9.9.1",
+    "eslint-plugin-playwright": "^1.6.2",
+    "globals": "^15.9.0",
+    "typescript-eslint": "^8.3.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
