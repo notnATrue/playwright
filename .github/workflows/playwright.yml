@@ -8,9 +8,9 @@ jobs:
   test:
     timeout-minutes: 60
     env: 
-      EMAIL: ${{ secrets.EMAIL }}
-      PASSWORD: ${{ secrets.PASSWORD }}
-      RECOVERY_CODE: ${{ secrets.RECOVERY_CODE }}
+      EMAIL: ${{ secrets.secrets.EMAIL }}
+      PASSWORD: ${{ secrets.secrets.PASSWORD }}
+      RECOVERY_CODE: ${{ secrets.secrets.RECOVERY_CODE }}
       CI: true
       DEBUG: pw:api,pw:browser
       HEADLESS: 0
