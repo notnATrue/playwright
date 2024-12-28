@@ -1,12 +1,11 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { selectors } from './common/selectors';
 import { texts } from './common/texts';
-import { locatorSelect } from './helpers/locator-select'
-import { config } from './config/config'
-import { LoginService } from './utils/login-service'
+import { locatorSelect } from './helpers/locator-select';
+import { config } from './config/config';
+import { LoginService } from './utils/login-service';
 
 test.describe('Login into Github', async () => {
-
   const { email, password }: { email: string, password: string } = config;
   const wrongPassword: string = 'WrongPassword123';
   const loginPage: string = '/login';
@@ -30,14 +29,14 @@ test.describe('Login into Github', async () => {
 
   await loginService.login(email, wrongPassword);
 
-  const errorAlert: Locator = await page.getByText(texts.incorrectEmailOrPassword);
+  const errorAlert: Locator | null = await page.getByText(texts.incorrectEmailOrPassword);
 
   await expect(page).toHaveURL(expectedURL);
   await expect(errorAlert).toHaveCSS(cssPropertyBorderColor, errorAlertBorderColor);
   await expect(errorAlert).toBeVisible();
   });
 
-  test('Should login into account before google auth 2fa', async ({ page }) => {
+  test('Should login into account before google auth 2fa', async ({ page }: { page: Page }) => {
     const expectedURL: string = '/sessions/two-factor/app';
     const loginService = new LoginService(page);
 
@@ -60,8 +59,8 @@ test.describe('Login into Github', async () => {
 
     await page.goto(recoveryURL);
     await loginService.fillRecoveryCodeAndSend(config.recoveryCode);
-    
-    const recoveryFailedAlert: Locator = await page.getByText(texts.recoveryCodeFailed)
+
+    const recoveryFailedAlert: Locator | null = await page.getByText(texts.recoveryCodeFailed)
     await expect(page).toHaveURL(loginPage);
     await expect(recoveryFailedAlert).toBeVisible();
     await expect(recoveryFailedAlert).toHaveCSS(cssPropertyBorderColor, errorAlertBorderColor);

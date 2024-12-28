@@ -9,21 +9,21 @@ export class LoginService {
         this.page = page as Page
     }
 
-    async login(email: string, password: string) {
-        const loginField: Locator = await locatorSelect(this.page, selectors.login)
-        const passwordField: Locator = await locatorSelect(this.page, selectors.password)
-        const signInBtn: Locator = await locatorSelect(this.page, selectors.signIn)
+    async login(email: string, password: string): Promise<void> {
+        const loginField: Locator = await locatorSelect(this.page, selectors.login);
+        const passwordField: Locator = await locatorSelect(this.page, selectors.password);
+        const signInBtn: Locator = await locatorSelect(this.page, selectors.signIn);
     
         await loginField.fill(email);
         await passwordField.fill(password);
         await signInBtn.click();
     }
 
-    async fillRecoveryCodeAndSend(recoveryCode: string) {
-        const recoveryField: Locator = await locatorSelect(this.page, selectors.recoveryField)
-        const recoveryBtn: Locator = await locatorSelect(this.page, selectors.recoveryBtn)
+    async fillRecoveryCodeAndSend(recoveryCode: string): Promise<void> {
+        const recoveryField: Locator = await locatorSelect(this.page, selectors.recoveryField);
+        const recoveryBtn: Locator = await locatorSelect(this.page, selectors.recoveryBtn);
 
-        await recoveryField.fill(recoveryCode)
-        await recoveryBtn.click()
+        await recoveryField.fill(recoveryCode);
+        await recoveryBtn.click();
     }
 }
