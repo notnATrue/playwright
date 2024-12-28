@@ -40,9 +40,11 @@ export class LoginService {
 
   async fillAndSendGoogle2faCode(): Promise<void> {
     const authService = new AuthService();
-    const code: string = await authService.createGoogle2FaCode(config.google2auth.key);
+    const code: string = await authService.createGoogle2FaCode(
+      config.google2auth.key,
+    );
 
     await this.page.keyboard.type(code, { delay: 100 });
-    await this.page.waitForTimeout(5000)
+    await this.page.waitForTimeout(1000);
   }
 }

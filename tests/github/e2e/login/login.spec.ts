@@ -24,82 +24,70 @@ test.describe('Login into Github', async () => {
     await expect(signIn).toBeVisible();
   });
 
-  // test('Should show alert when login with wrong cred', async ({
-  //   page,
-  // }: IPage) => {
-  //   const expectedURL: string = '/session';
-  //   const loginService = new LoginService(page);
-
-  //   (await loginService.login(email, wrongPassword)) as void;
-
-  //   const errorAlert: Locator = await getByText(
-  //     page,
-  //     texts.incorrectEmailOrPassword,
-  //   );
-
-  //   await expect(page).toHaveURL(expectedURL);
-  //   await expect(errorAlert).toHaveCSS(
-  //     cssPropertyBorderColor,
-  //     errorAlertBorderColor,
-  //   );
-  //   await expect(errorAlert).toBeVisible();
-  // });
-
-  // test('Should login into account before google auth 2fa', async ({
-  //   page,
-  // }: IPage) => {
-  //   const expectedURL: string = '/sessions/two-factor/app';
-  //   const loginService = new LoginService(page);
-
-  //   (await loginService.login(email, password)) as void;
-
-  //   const twoFactor: Locator = await getByText(page, texts.twoFactor);
-  //   await expect(twoFactor).toBeVisible();
-  //   await expect(page).toHaveURL(expectedURL);
-  // });
-
-  // test('Should login into account and alerting due to wrong recovery code', async ({
-  //   page,
-  // }: IPage) => {
-  //   const expectedURL: string = '/sessions/two-factor/app';
-  //   const recoveryURL: string = '/sessions/two-factor/recovery';
-  //   const loginService = new LoginService(page);
-
-  //   (await loginService.login(email, password)) as void;
-
-  //   const twoFactor: Locator = await getByText(page, texts.twoFactor);
-  //   await expect(twoFactor).toBeVisible();
-  //   await expect(page).toHaveURL(expectedURL);
-
-  //   await page.goto(recoveryURL);
-  //   (await loginService.fillRecoveryCodeAndSend(recoveryCode)) as void;
-
-  //   const recoveryFailedAlert: Locator = await getByText(
-  //     page,
-  //     texts.recoveryCodeFailed,
-  //   );
-  //   await expect(recoveryFailedAlert).toBeVisible();
-  //   await expect(recoveryFailedAlert).toHaveCSS(
-  //     cssPropertyBorderColor,
-  //     errorAlertBorderColor,
-  //   );
-  //   await expect(page).toHaveURL(loginPage);
-  // });
-
-  test('Should login into account', async ({
+  test('Should show alert when login with wrong cred', async ({
     page,
-  }) => {
-    const expectedURL: string = '/sessions/two-factor/app';
-    const baseURL: string = 'https://github.com/';
+  }: IPage) => {
+    const expectedURL: string = '/session';
     const loginService = new LoginService(page);
-    
+
+    (await loginService.login(email, wrongPassword)) as void;
+
+    const errorAlert: Locator = await getByText(
+      page,
+      texts.incorrectEmailOrPassword,
+    );
+
+    await expect(page).toHaveURL(expectedURL);
+    await expect(errorAlert).toHaveCSS(
+      cssPropertyBorderColor,
+      errorAlertBorderColor,
+    );
+    await expect(errorAlert).toBeVisible();
+  });
+
+  test('Should login into account and alerting due to wrong recovery code', async ({
+    page,
+  }: IPage) => {
+    const expectedURL: string = '/sessions/two-factor/app';
+    const recoveryURL: string = '/sessions/two-factor/recovery';
+    const loginService = new LoginService(page);
+
     (await loginService.login(email, password)) as void;
-    
+
     const twoFactor: Locator = await getByText(page, texts.twoFactor);
     await expect(twoFactor).toBeVisible();
     await expect(page).toHaveURL(expectedURL);
 
-    await loginService.fillAndSendGoogle2faCode();
+    await page.goto(recoveryURL);
+    (await loginService.fillRecoveryCodeAndSend(recoveryCode)) as void;
+
+    const recoveryFailedAlert: Locator = await getByText(
+      page,
+      texts.recoveryCodeFailed,
+    );
+    await expect(recoveryFailedAlert).toBeVisible();
+    await expect(recoveryFailedAlert).toHaveCSS(
+      cssPropertyBorderColor,
+      errorAlertBorderColor,
+    );
+    await expect(page).toHaveURL(loginPage);
+  });
+
+  test('Should login into account', async ({ page }: IPage) => {
+    const expectedURL: string = '/sessions/two-factor/app';
+    const baseURL: string = 'https://github.com/';
+    const loginService = new LoginService(page);
+
+    (await loginService.login(email, password)) as void;
+
+    const twoFactor: Locator = await getByText(page, texts.twoFactor);
+    await expect(twoFactor).toBeVisible();
+    await expect(page).toHaveURL(expectedURL);
+
+    (await loginService.fillAndSendGoogle2faCode()) as void;
     expect(page.url()).toBe(baseURL);
+
+    const dashboard: Locator = page.getByRole('link', { name: 'Dashboard' });
+    await expect(dashboard).toBeVisible();
   });
 });

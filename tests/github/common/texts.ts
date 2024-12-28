@@ -4,4 +4,5 @@ export const texts = {
   twoFactor: 'Two-factor authentication',
   recoveryCodes: 'Use a recovery code or begin 2FA account recovery',
   recoveryCodeFailed: 'Recovery code authentication failed.',
+  dashboard: 'Dashboard',
 };

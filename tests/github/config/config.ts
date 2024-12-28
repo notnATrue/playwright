@@ -12,6 +12,6 @@ export const config = {
     ci: process.env.CI,
   },
   google2auth: {
-    key: process.env.GOOGLE_2_FA_PRIVATE_KEY || ''
-  }
+    key: process.env.GOOGLE_2_FA_PRIVATE_KEY || '',
+  },
 };
