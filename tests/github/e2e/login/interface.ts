@@ -7,4 +7,5 @@ export interface IPage {
 export interface IUserEmailAndPassword {
   email: string;
   password: string;
+  recoveryCode: string;
 }

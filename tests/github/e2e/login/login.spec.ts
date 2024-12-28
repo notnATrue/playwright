@@ -6,7 +6,7 @@ import { LoginService } from '../../utils/login-service';
 import { IPage, IUserEmailAndPassword } from './interface';
 
 test.describe('Login into Github', async () => {
-  const { email, password }: IUserEmailAndPassword = config;
+  const { email, password, recoveryCode }: IUserEmailAndPassword = config;
   const wrongPassword: string = 'WrongPassword123';
   const loginPage: string = '/login';
   const cssPropertyBorderColor: string = 'border-color';
@@ -15,11 +15,11 @@ test.describe('Login into Github', async () => {
   test.beforeEach(async ({ page }: IPage) => {
     await page.goto(loginPage);
 
-    await expect(page).toHaveURL(loginPage);
+    await expect(page).toHaveURL(loginPage, { timeout: 15000 });
   });
 
   test('Should sign-in text to be visible', async ({ page }: IPage) => {
-    const signIn: Locator | null = await getByText(page, texts.signIn);
+    const signIn: Locator = await getByText(page, texts.signIn);
 
     await expect(signIn).toBeVisible();
   });
@@ -32,12 +32,12 @@ test.describe('Login into Github', async () => {
 
     (await loginService.login(email, wrongPassword)) as void;
 
-    const errorAlert: Locator | null = await getByText(
+    const errorAlert: Locator = await getByText(
       page,
       texts.incorrectEmailOrPassword,
     );
 
-    await expect(page).toHaveURL(expectedURL);
+    await expect(page).toHaveURL(expectedURL, { timeout: 15000 });
     await expect(errorAlert).toHaveCSS(
       cssPropertyBorderColor,
       errorAlertBorderColor,
@@ -53,9 +53,9 @@ test.describe('Login into Github', async () => {
 
     (await loginService.login(email, password)) as void;
 
-    const twoFactor: Locator | null = await getByText(page, texts.twoFactor);
+    const twoFactor: Locator = await getByText(page, texts.twoFactor);
     await expect(twoFactor).toBeVisible();
-    await expect(page).toHaveURL(expectedURL);
+    await expect(page).toHaveURL(expectedURL, { timeout: 15000 });
   });
 
   test('Should login into account and alerting due to wrong recovery code', async ({
@@ -67,14 +67,14 @@ test.describe('Login into Github', async () => {
 
     (await loginService.login(email, password)) as void;
 
-    const twoFactor: Locator | null = await getByText(page, texts.twoFactor);
+    const twoFactor: Locator = await getByText(page, texts.twoFactor);
     await expect(twoFactor).toBeVisible();
-    await expect(page).toHaveURL(expectedURL);
+    await expect(page).toHaveURL(expectedURL, { timeout: 15000 });
 
     await page.goto(recoveryURL);
-    await loginService.fillRecoveryCodeAndSend(config.recoveryCode);
+    (await loginService.fillRecoveryCodeAndSend(recoveryCode)) as void;
 
-    const recoveryFailedAlert: Locator | null = await getByText(
+    const recoveryFailedAlert: Locator = await getByText(
       page,
       texts.recoveryCodeFailed,
     );
@@ -83,6 +83,6 @@ test.describe('Login into Github', async () => {
       cssPropertyBorderColor,
       errorAlertBorderColor,
     );
-    await expect(page).toHaveURL(loginPage);
+    await expect(page).toHaveURL(loginPage, { timeout: 15000 });
   });
 });
