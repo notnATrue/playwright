@@ -1,5 +1,5 @@
-import { selectors } from "../common/selectors"
+import { Locator, Page } from "@playwright/test"
 
-export const locatorSelect = async (page: any, selector: any) => {
+export const locatorSelect = async (page: Page, selector: string): Promise<Locator> => {
     return page.locator(selector)
 }

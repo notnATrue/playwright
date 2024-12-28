@@ -1,17 +1,18 @@
 import { selectors } from "../common/selectors"
 import { locatorSelect } from "../helpers/locator-select"
+import { Locator, Page } from '@playwright/test';
 
 export class LoginService {
-    private readonly page: any
-    
-    constructor(page: any) {
-        this.page = page
+    private readonly page: Page
+
+    constructor(page: Page) {
+        this.page = page as Page
     }
 
     async login(email: string, password: string) {
-        const loginField = await locatorSelect(this.page, selectors.login)
-        const passwordField = await locatorSelect(this.page, selectors.password)
-        const signInBtn = await locatorSelect(this.page, selectors.signIn)
+        const loginField: Locator = await locatorSelect(this.page, selectors.login)
+        const passwordField: Locator = await locatorSelect(this.page, selectors.password)
+        const signInBtn: Locator = await locatorSelect(this.page, selectors.signIn)
     
         await loginField.fill(email);
         await passwordField.fill(password);
@@ -19,9 +20,10 @@ export class LoginService {
     }
 
     async fillRecoveryCodeAndSend(recoveryCode: string) {
-        const recoveryField = await locatorSelect(this.page, selectors.recoveryField)
+        const recoveryField: Locator = await locatorSelect(this.page, selectors.recoveryField)
+        const recoveryBtn: Locator = await locatorSelect(this.page, selectors.recoveryBtn)
+
         await recoveryField.fill(recoveryCode)
-        const recoveryBtn = await locatorSelect(this.page, selectors.recoveryBtn)
         await recoveryBtn.click()
     }
 }
