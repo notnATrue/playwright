@@ -6,7 +6,7 @@ import { LoginService } from '../../utils/login-service';
 import { IPage, IUserEmailAndPassword } from './interface';
 
 test.describe('Login into Github', async () => {
-  const { email, password, recoveryCode }: IUserEmailAndPassword = config;
+  const { email, password, recoveryCode }: IUserEmailAndPassword = config.user;
   const wrongPassword: string = 'WrongPassword123';
   const loginPage: string = '/login';
   const cssPropertyBorderColor: string = 'border-color';
