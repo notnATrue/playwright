@@ -4,6 +4,7 @@ import { selectors } from './common/selectors';
 import { texts } from './common/texts';
 import { locatorSelect } from './helpers/locator-select'
 import { config } from './config/config'
+import { LoginService } from './utils/login-service'
 
 dotenv.config();
 
@@ -15,36 +16,51 @@ test.describe('Login into Github', async () => {
     await page.goto(loginPage);
   });
 
+  const errorAlertBorderColor = 'rgb(31, 35, 40)'
+  const cssPropertyBorderColor = 'border-color';
+  const wrongPassword = 'WrongPassword123'
   const userMock = {
     email: config.email,
     password: config.password,
-    wrongPassword: 'WrongPassword123'
+    wrongPassword
   };
 
-  test('Should main text to be visible', async ({ page }) => {
+  test('Should sign-in text to be visible', async ({ page }) => {
     await expect(page.getByText(texts.signIn)).toBeVisible();
   });
 
-  test('Should login into account', async ({ page }) => {
-    const login = await locatorSelect(page, selectors.login)
-    await login.fill(userMock.email);
-    const password = await locatorSelect(page, selectors.password)
-    await password.fill(userMock.password);
-    const signIn = await locatorSelect(page, selectors.signIn)
-    await signIn.click();
+    test('Should show alert when login with wrong cred', async ({ page }) => {
+    const expectedURL = '/session';
+    
+    const loginService = new LoginService(page);
 
-    await expect(page.getByText(texts.twoFactor)).toBeVisible();
+    await loginService.login(userMock.email, userMock.wrongPassword);
+
+    const errorAlert = await page.getByText(texts.incorrectEmailOrPassword);
+
+    await expect(page).toHaveURL(expectedURL);
+    await expect(errorAlert).toHaveCSS(cssPropertyBorderColor, errorAlertBorderColor);
+    await expect(errorAlert).toBeVisible();
   });
 
-  test('Should show alert when login with wrong cred', async ({ page }) => {
-    const login = await locatorSelect(page, selectors.login)
-    await login.fill(userMock.email);
-    const password = await locatorSelect(page, selectors.password)
-    await password.fill(userMock.wrongPassword);
-    const signIn = await locatorSelect(page, selectors.signIn)
-    signIn.click()
+  test('Should login into account', async ({ page }) => {
+    const expectedURL = '/sessions/two-factor/app';
+    const recoveryURL = '/sessions/two-factor/recovery';
+    const loginURL = '/login'
+    const loginService = new LoginService(page);
 
-    await expect(page.getByText(texts.incorrectEmailOrPassword)).toBeVisible();
+    await loginService.login(userMock.email, userMock.password);
+
+    await expect(page).toHaveURL(expectedURL);
+    await expect(page.getByText(texts.twoFactor)).toBeVisible();
+
+    await page.goto(recoveryURL);
+    await loginService.fillRecoveryCodeAndSend(config.recoveryCode);
+    
+    const recoveryFailedAlert = await page.getByText(texts.recoveryCodeFailed)
+    await expect(page).toHaveURL(loginURL);
+    await expect(recoveryFailedAlert).toBeVisible();
+    await expect(recoveryFailedAlert).toHaveCSS(cssPropertyBorderColor, errorAlertBorderColor);
   });
 });
 
