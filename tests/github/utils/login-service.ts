@@ -1,6 +1,8 @@
 import { selectors } from '../common/selectors';
-import { locatorSelect } from '../helpers/locator-select';
+import { getByText, locatorSelect } from '../helpers/locator-select';
 import { Locator, Page } from '@playwright/test';
+import { AuthService } from './auth-service';
+import { config } from '../config/config';
 
 export class LoginService {
   private readonly page: Page;
@@ -34,5 +36,13 @@ export class LoginService {
 
     await recoveryField.fill(recoveryCode);
     await recoveryBtn.click();
+  }
+
+  async fillAndSendGoogle2faCode(): Promise<void> {
+    const authService = new AuthService();
+    const code: string = await authService.createGoogle2FaCode(config.google2auth.key);
+
+    await this.page.keyboard.type(code, { delay: 100 });
+    await this.page.waitForTimeout(5000)
   }
 }

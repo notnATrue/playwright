@@ -10,10 +10,11 @@ jobs:
   test:
     timeout-minutes: 60
     environment: secrets
-    env: 
+    env:
       EMAIL: ${{ secrets.EMAIL }}
       PASSWORD: ${{ secrets.PASSWORD }}
       RECOVERY_CODE: ${{ secrets.RECOVERY_CODE }}
+      GOOGLE_2_FA_PRIVATE_KEY: ${{ secrets.GOOGLE_2_FA_PRIVATE_KEY }}
       CI: true
       DEBUG: pw:api
     runs-on: ubuntu-latest

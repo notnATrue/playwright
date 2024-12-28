@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, BrowserContext } from '@playwright/test';
 
 export interface IPage {
   page: Page;

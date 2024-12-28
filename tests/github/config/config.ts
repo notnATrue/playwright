@@ -9,7 +9,9 @@ export const config = {
     recoveryCode: process.env.RECOVERY_CODE || '',
   },
   github: {
-    ci: process.env.CI
+    ci: process.env.CI,
+  },
+  google2auth: {
+    key: process.env.GOOGLE_2_FA_PRIVATE_KEY || ''
   }
-
 };
