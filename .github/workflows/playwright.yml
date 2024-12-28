@@ -7,6 +7,10 @@ on:
 jobs:
   test:
     timeout-minutes: 60
+    env: 
+      EMAIL: ${{ secrets.EMAIL }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+      RECOVERY_CODE: ${{ secrets.RECOVERY_CODE }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
