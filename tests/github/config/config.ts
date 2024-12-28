@@ -1,9 +1,9 @@
-import dotenv from 'dotenv';
+import { config as dotenvConfig } from 'dotenv';
 
-dotenv.config();
+dotenvConfig();
 
 export const config = {
-    email: process.env.EMAIL,
-    password: process.env.PASSWORD,
-    recoveryCode: process.env.RECOVERY_CODE
-}
+  email: process.env.EMAIL || '',
+  password: process.env.PASSWORD || '',
+  recoveryCode: process.env.RECOVERY_CODE || '',
+};
