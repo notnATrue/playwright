@@ -9,11 +9,12 @@ import { routes } from '../../common/routes';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Searching via Github', async () => {
-  test.beforeEach(async ({ page }: IPage) => {
-    const dir: string = './tests/github/test-json';
-    const filePath: string = `${dir}/cookies.json`;
+  const paths = {
+    cookiesFile: './tests/github/test-json/cookies.json',
+  };
 
-    const cookies = await readFile(filePath);
+  test.beforeEach(async ({ page }: IPage) => {
+    const cookies = await readFile(paths.cookiesFile);
 
     await page.context().addCookies(cookies);
     await page.goto(routes.baseURL);
@@ -21,7 +22,7 @@ test.describe('Searching via Github', async () => {
     expect(page.url()).toBe(routes.baseURL);
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async ({ page }: IPage) => {
     await page.context().clearCookies();
   });
 
@@ -29,7 +30,7 @@ test.describe('Searching via Github', async () => {
     const mockText: string = 'typescript-eslint';
     const searchBtn: Locator = locators.searchBtn(page);
 
-    const { width, height } = await coordinatesDispersion(searchBtn);
+    const { width, height }: { width: number, height: number } = await coordinatesDispersion(searchBtn);
     const operationService = new OperationService();
 
     await operationService.clickOnSearchAndType(
@@ -40,7 +41,7 @@ test.describe('Searching via Github', async () => {
     );
 
     const typescriptRepo: Locator = locators.typescriptRepo(page);
-    await typescriptRepo.dblclick({ force: true, delay: 2000 });
+    await typescriptRepo.dblclick({ delay: 2000 });
 
     const link = locators.linkURL(page);
 

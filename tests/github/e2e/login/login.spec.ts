@@ -9,11 +9,21 @@ import { locators } from '../../helpers/locators';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Login into Github', async () => {
-  const { email, password, recoveryCode }: IUserEmailAndPassword = config.user;
-  const wrongPassword: string = 'WrongPassword123';
-  const cssPropertyBorderColor: string = 'border-color';
-  const errorAlertBorderColor: string = 'rgb(31, 35, 40)';
   let loginService: LoginService;
+  const { email, password, recoveryCode }: IUserEmailAndPassword = config.user;
+  const mocks = {
+    credential: {
+      wrongPassword: 'WrongPassword123',
+    },
+    css: {
+      borderColor: 'border-color',
+      errorAlertBorderColor: 'rgb(31, 35, 40)',
+    },
+  };
+  const dirPaths = {
+    cookiesDir: './tests/github/test-json',
+    cookiesFile: './tests/github/test-json/cookies.json',
+  };
 
   test.beforeEach(async ({ page }: IPage) => {
     loginService = new LoginService(page);
@@ -32,15 +42,15 @@ test.describe('Login into Github', async () => {
   test('Should show alert when login with wrong cred', async ({
     page,
   }: IPage) => {
-    await loginService.login(email, wrongPassword);
+    await loginService.login(email, mocks.credential.wrongPassword);
 
     const errorAlert: Locator = locators.errorAlert(page);
 
     await expect(page).toHaveURL(routes.session);
     await expect(errorAlert).toBeVisible();
     await expect(errorAlert).toHaveCSS(
-      cssPropertyBorderColor,
-      errorAlertBorderColor,
+      mocks.css.borderColor,
+      mocks.css.errorAlertBorderColor,
     );
   });
 
@@ -59,16 +69,13 @@ test.describe('Login into Github', async () => {
     const recoveryFailedAlert: Locator = locators.recoveryFailedAlert(page);
     await expect(recoveryFailedAlert).toBeVisible();
     await expect(recoveryFailedAlert).toHaveCSS(
-      cssPropertyBorderColor,
-      errorAlertBorderColor,
+      mocks.css.borderColor,
+      mocks.css.errorAlertBorderColor,
     );
     await expect(page).toHaveURL(routes.loginPage);
   });
 
   test('Should login and store cookies', async ({ page }: IPage) => {
-    const dir: string = './tests/github/test-json';
-    const filePath: string = `${dir}/cookies.json`;
-
     await page.goto(routes.loginPage);
 
     await expect(page).toHaveURL(routes.loginPage);
@@ -86,7 +93,7 @@ test.describe('Login into Github', async () => {
     await expect(dashboard).toBeVisible();
     const cookies: Cookie[] = await page.context().cookies();
 
-    await mkDir(dir);
-    await writeFile(filePath, cookies);
+    await mkDir(dirPaths.cookiesDir);
+    await writeFile(dirPaths.cookiesFile, cookies);
   });
 });
