@@ -2,7 +2,7 @@ import { test, expect, Locator } from '@playwright/test';
 import { selectors } from '../../common/selectors';
 import { coordinatesDispersion } from '../../helpers/coordinates-dispersion';
 import { locatorSelect } from '../../helpers/locator-select';
-import { OperationService } from '../../utils/operation-service';
+import { OperationService } from '../../services/operation-service';
 import { IPage } from '../login/interface';
 import { readFile } from '../../helpers/read-write';
 
@@ -14,7 +14,7 @@ test.describe('Searching via Github', async () => {
     const dir: string = './tests/github/test-json';
     const filePath: string = `${dir}/cookies.json`;
 
-    const { cookies } = await readFile(filePath);
+    const cookies = await readFile(filePath);
 
     await page.context().addCookies(cookies);
     await page.goto(baseURL);

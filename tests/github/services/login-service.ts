@@ -1,5 +1,5 @@
 import { selectors } from '../common/selectors';
-import { getByText, locatorSelect } from '../helpers/locator-select';
+import { locatorSelect } from '../helpers/locator-select';
 import { Locator, Page } from '@playwright/test';
 import { AuthService } from './auth-service';
 import { config } from '../config/config';
