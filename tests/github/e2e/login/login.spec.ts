@@ -1,11 +1,10 @@
 import { test, expect, Locator, Cookie } from '@playwright/test';
-import { texts } from '../../common/texts';
 import { config } from '../../config/config';
-import { getByText } from '../../helpers/locator-select';
 import { LoginService } from '../../services/login-service';
 import { IPage, IUserEmailAndPassword } from './interface';
 import { mkDir, writeFile } from '../../helpers/read-write';
 import { routes } from '../../common/routes';
+import { locators } from '../../helpers/locators';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -14,15 +13,18 @@ test.describe('Login into Github', async () => {
   const wrongPassword: string = 'WrongPassword123';
   const cssPropertyBorderColor: string = 'border-color';
   const errorAlertBorderColor: string = 'rgb(31, 35, 40)';
+  let loginService: LoginService;
 
   test.beforeEach(async ({ page }: IPage) => {
+    loginService = new LoginService(page);
+
     await page.goto(routes.loginPage);
 
     await expect(page).toHaveURL(routes.loginPage);
   });
 
   test('Should sign-in text be visible', async ({ page }: IPage) => {
-    const signIn: Locator = await getByText(page, texts.signIn);
+    const signIn: Locator = locators.signIn(page);
 
     await expect(signIn).toBeVisible();
   });
@@ -30,41 +32,31 @@ test.describe('Login into Github', async () => {
   test('Should show alert when login with wrong cred', async ({
     page,
   }: IPage) => {
-    const loginService = new LoginService(page);
-
     await loginService.login(email, wrongPassword);
 
-    const errorAlert: Locator = await getByText(
-      page,
-      texts.incorrectEmailOrPassword,
-    );
+    const errorAlert: Locator = locators.errorAlert(page);
 
     await expect(page).toHaveURL(routes.session);
+    await expect(errorAlert).toBeVisible();
     await expect(errorAlert).toHaveCSS(
       cssPropertyBorderColor,
       errorAlertBorderColor,
     );
-    await expect(errorAlert).toBeVisible();
   });
 
   test('Should login into account and alerting due to wrong recovery code', async ({
     page,
   }: IPage) => {
-    const loginService = new LoginService(page);
-
     await loginService.login(email, password);
 
-    const twoFactor: Locator = await getByText(page, texts.twoFactor);
+    const twoFactor: Locator = locators.twoFactor(page);
     await expect(twoFactor).toBeVisible();
     await expect(page).toHaveURL(routes.twoFactor);
 
     await page.goto(routes.recoveryURL);
     await loginService.fillRecoveryCodeAndSend(recoveryCode);
 
-    const recoveryFailedAlert: Locator = await getByText(
-      page,
-      texts.recoveryCodeFailed,
-    );
+    const recoveryFailedAlert: Locator = locators.recoveryFailedAlert(page);
     await expect(recoveryFailedAlert).toBeVisible();
     await expect(recoveryFailedAlert).toHaveCSS(
       cssPropertyBorderColor,
@@ -74,27 +66,22 @@ test.describe('Login into Github', async () => {
   });
 
   test('Should login and store cookies', async ({ page }: IPage) => {
-    const expectedURL: string = '/sessions/two-factor/app';
-    const baseURL: string = 'https://github.com/';
-    const dir = './tests/github/test-json';
-    const filePath = `${dir}/cookies.json`;
-    const loginService = new LoginService(page);
+    const dir: string = './tests/github/test-json';
+    const filePath: string = `${dir}/cookies.json`;
 
     await page.goto(routes.loginPage);
 
     await expect(page).toHaveURL(routes.loginPage);
     await loginService.login(email, password);
 
-    const twoFactor: Locator = await getByText(page, texts.twoFactor);
+    const twoFactor: Locator = locators.twoFactor(page);
     await expect(twoFactor).toBeVisible();
-    await expect(page).toHaveURL(expectedURL);
+    await expect(page).toHaveURL(routes.sessionAfterLogin);
 
     await loginService.fillAndSendGoogle2faCode();
-    expect(page.url()).toBe(baseURL);
+    expect(page.url()).toBe(routes.baseURL);
 
-    const dashboard: Locator = page.getByRole('link', {
-      name: texts.dashboard,
-    });
+    const dashboard: Locator = locators.dashboard(page);
 
     await expect(dashboard).toBeVisible();
     const cookies: Cookie[] = await page.context().cookies();

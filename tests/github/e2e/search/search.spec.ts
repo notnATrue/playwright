@@ -1,66 +1,62 @@
 import { test, expect, Locator } from '@playwright/test';
-import { selectors } from '../../common/selectors';
 import { coordinatesDispersion } from '../../helpers/coordinates-dispersion';
-import { locatorSelect } from '../../helpers/locator-select';
 import { OperationService } from '../../services/operation-service';
 import { IPage } from '../login/interface';
 import { readFile } from '../../helpers/read-write';
+import { locators } from '../../helpers/locators';
+import { routes } from '../../common/routes';
 
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Searching via Github', async () => {
   test.beforeEach(async ({ page }: IPage) => {
-    const baseURL: string = 'https://github.com/';
     const dir: string = './tests/github/test-json';
     const filePath: string = `${dir}/cookies.json`;
 
     const cookies = await readFile(filePath);
 
     await page.context().addCookies(cookies);
-    await page.goto(baseURL);
+    await page.goto(routes.baseURL);
 
-    expect(page.url()).toBe(baseURL);
+    expect(page.url()).toBe(routes.baseURL);
+  });
+
+  test.afterEach(async ({ page }) => {
+    await page.context().clearCookies();
   });
 
   test('Should search via github', async ({ page }: IPage) => {
     const mockText: string = 'typescript-eslint';
-    const mockURL: string = '/typescript-eslint/typescript-eslint';
-    const searchBtn: Locator = page.getByRole('button', {
-      name: 'Type / to search',
-    });
+    const searchBtn: Locator = locators.searchBtn(page);
 
     const { width, height } = await coordinatesDispersion(searchBtn);
     const operationService = new OperationService();
 
-    (await operationService.clickOnSearchAndType(
+    await operationService.clickOnSearchAndType(
       page,
       width,
       height,
       mockText,
-    )) as void;
-
-    const typescriptRepo: Locator = await locatorSelect(
-      page,
-      selectors.typescriptRepo,
     );
+
+    const typescriptRepo: Locator = locators.typescriptRepo(page);
     await typescriptRepo.dblclick({ force: true, delay: 2000 });
 
-    const link = await locatorSelect(page, selectors.typescriptURL);
+    const link = locators.linkURL(page);
 
     expect(link).toBeDefined();
-    await expect(page).toHaveURL(mockURL);
+    await expect(page).toHaveURL(routes.typescriptURL);
   });
 
   test('Should search via copilot', async ({ page }: IPage) => {
-    const copilotInput: Locator = page.locator(selectors.copilotInput);
     const mockText: string = 'jest';
-    const copilotURL: string = '/copilot';
+    const copilotInput: Locator = locators.copilotInput(page);
 
     await copilotInput.click();
     await copilotInput.fill(mockText);
     await page.keyboard.press('Enter', { delay: 250 });
 
-    await expect(page).toHaveURL(copilotURL);
+    await expect(page).toHaveURL(routes.copilotURL);
     await page.waitForTimeout(5000);
   });
 });
