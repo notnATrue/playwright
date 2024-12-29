@@ -9,11 +9,10 @@ import { readFile } from '../../helpers/read-write';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Searching via Github', async () => {
-
   test.beforeEach(async ({ page }: IPage) => {
     const baseURL: string = 'https://github.com/';
-    const dir = './tests/github/test-json';
-    const filePath = `${dir}/cookies.json`;
+    const dir: string = './tests/github/test-json';
+    const filePath: string = `${dir}/cookies.json`;
 
     const { cookies } = await readFile(filePath);
 
