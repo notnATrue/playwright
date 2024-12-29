@@ -30,9 +30,9 @@ test.describe('Searching via Github', async () => {
     const { width, height } = await coordinatesDispersion(searchBtn);
     const operationService = new OperationService();
 
-    await operationService.clickOnSearchAndType(page, width, height, mockText);
+    await operationService.clickOnSearchAndType(page, width, height, mockText) as void;
 
-    const typescriptRepo = await locatorSelect(
+    const typescriptRepo: Locator = await locatorSelect(
       page,
       selectors.typescriptRepo,
     );
@@ -45,15 +45,16 @@ test.describe('Searching via Github', async () => {
   });
 
   test('Case 2: should search via copilot', async ({ page }: IPage) => {
-    const copilotInput = page.locator(selectors.copilotInput);
-    const mockText = 'jest';
+    const copilotInput: Locator = page.locator(selectors.copilotInput);
+    const mockText: string = 'jest';
+    const copilotURL: string = '/copilot'
 
     await copilotInput.click();
     await copilotInput.fill(mockText);
     await page.getByLabel('Send').click();
     await page.keyboard.press('Enter', { delay: 250 });
 
-    expect(page).toHaveURL('/copilot')
+    expect(page).toHaveURL(copilotURL)
     await page.waitForTimeout(5000);
   });
 });
