@@ -2,9 +2,10 @@ import { test, expect, Locator, Cookie } from '@playwright/test';
 import { config } from '../../config/config';
 import { LoginService } from '../../services/login-service';
 import { IPage, IUserEmailAndPassword } from './interface';
-import { mkDir, writeFile } from '../../helpers/read-write';
+import { mkDir, writeFile, readFile } from '../../helpers/read-write';
 import { routes } from '../../common/routes';
 import { locators } from '../../helpers/locators';
+import { logger } from '../../transports/winston';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -18,6 +19,10 @@ test.describe('Login into Github', async () => {
     css: {
       borderColor: 'border-color',
       errorAlertBorderColor: 'rgb(31, 35, 40)',
+    },
+    sessionParams: {
+      loggedIn: 'logged_in',
+      yes: 'yes',
     },
   };
   const dirPaths = {
@@ -93,7 +98,18 @@ test.describe('Login into Github', async () => {
     await expect(dashboard).toBeVisible();
     const cookies: Cookie[] = await page.context().cookies();
 
-    await mkDir(dirPaths.cookiesDir);
-    await writeFile(dirPaths.cookiesFile, cookies);
+    try {
+      await mkDir(dirPaths.cookiesDir);
+      await writeFile(dirPaths.cookiesFile, cookies);
+    } catch (err) {
+      logger.error(err);
+    } finally {
+      const cookies = await readFile(dirPaths.cookiesFile);
+      const sessionCookie = cookies.find((cookie: Cookie) => {
+        return cookie.name === mocks.sessionParams.loggedIn;
+      });
+
+      expect(sessionCookie?.value).toEqual(mocks.sessionParams.yes);
+    };
   });
 });
