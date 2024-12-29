@@ -6,5 +6,7 @@ export const selectors = {
   recoveryBtn: '.btn-primary.btn.btn-block',
   verifyBtn: 'Verify',
   verifyCodeInput: '#app_totp',
-  pageTwo: 'Page 2',
+  typescriptRepo: "a[href='/typescript-eslint/typescript-eslint']",
+  typescriptURL: 'a[href="link:///typescript-eslint/typescript-eslint"]',
+  copilotInput: '#copilot-dashboard-entrypoint-textarea',
 };
