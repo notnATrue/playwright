@@ -6,7 +6,6 @@ import { LoginService } from '../../utils/login-service';
 import { IPage, IUserEmailAndPassword } from './interface';
 import { mkDir, writeFile } from '../../helpers/read-write';
 
-
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Login into Github', async () => {
@@ -22,15 +21,17 @@ test.describe('Login into Github', async () => {
     await expect(page).toHaveURL(loginPage);
   });
 
-  test('Should sign-in text to be visible', async ({ page }: IPage) => {
+  test('Should sign-in text be visible', async ({ page }: IPage) => {
     const signIn: Locator = await getByText(page, texts.signIn);
 
     await expect(signIn).toBeVisible();
   });
 
-  test('should login and store cookies', async ({ page }: IPage) => {
+  test('Should login and store cookies', async ({ page }: IPage) => {
     const expectedURL: string = '/sessions/two-factor/app';
     const baseURL: string = 'https://github.com/';
+    const dir = './tests/github/test-json';
+    const filePath = `${dir}/cookies.json`;
     const loginService = new LoginService(page);
 
     await page.goto(loginPage);
@@ -52,8 +53,8 @@ test.describe('Login into Github', async () => {
     await expect(dashboard).toBeVisible();
     const cookies: Cookie[] = await page.context().cookies();
 
-    await mkDir();
-    await writeFile(cookies);
+    await mkDir(dir);
+    await writeFile(filePath, cookies);
   });
 
   // test('Should show alert when login with wrong cred', async ({
@@ -105,4 +106,3 @@ test.describe('Login into Github', async () => {
   //   await expect(page).toHaveURL(loginPage);
   // });
 });
-
