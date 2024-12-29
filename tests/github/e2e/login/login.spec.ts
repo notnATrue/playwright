@@ -4,7 +4,7 @@ import { config } from '../../config/config';
 import { getByText } from '../../helpers/locator-select';
 import { LoginService } from '../../utils/login-service';
 import { IPage, IUserEmailAndPassword } from './interface';
-import { writeFile } from '../../helpers/read-write';
+import { mkDir, writeFile } from '../../helpers/read-write';
 
 
 test.describe.configure({ mode: 'serial' });
@@ -52,6 +52,7 @@ test.describe('Login into Github', async () => {
     await expect(dashboard).toBeVisible();
     const cookies: Cookie[] = await page.context().cookies();
 
+    await mkDir()
     await writeFile(cookies);
 
   });
