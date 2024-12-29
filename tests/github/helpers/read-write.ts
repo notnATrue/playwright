@@ -14,6 +14,6 @@ export const writeFile = async (cookies) => {
   fs.writeFile(filePath, JSON.stringify({ cookies }, null, 2), (err) => { console.log(err) });
 }
 
-export const mkDir = async (path) => {
-  fs.mkdir(filePath, () => {});
+export const mkDir = async () => {
+  fs.mkdir(dir, () => {});
 }
