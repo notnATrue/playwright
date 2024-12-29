@@ -9,3 +9,10 @@ export interface IUserEmailAndPassword {
   password: string;
   recoveryCode: string;
 }
+
+export interface IBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}

@@ -44,7 +44,7 @@ export class LoginService {
       config.google2auth.key,
     );
 
-    await this.page.keyboard.type(code, { delay: 100 });
-    await this.page.waitForTimeout(1000);
+    await this.page.keyboard.type(code, { delay: 250 });
+    await this.page.waitForTimeout(2000);
   }
 }

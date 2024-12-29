@@ -6,4 +6,5 @@ export const selectors = {
   recoveryBtn: '.btn-primary.btn.btn-block',
   verifyBtn: 'Verify',
   verifyCodeInput: '#app_totp',
+  pageTwo: 'Page 2',
 };

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "npx playwright test",
-    "test:ui": "npx playwright test --ui",
+    "test:ui": "npx playwright test --ui --headed",
     "lint": "npx eslint . --c ./eslint.config.js",
     "lint:fix": "npx eslint . --c ./eslint.config.js --fix"
   },

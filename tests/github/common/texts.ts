@@ -5,4 +5,5 @@ export const texts = {
   recoveryCodes: 'Use a recovery code or begin 2FA account recovery',
   recoveryCodeFailed: 'Recovery code authentication failed.',
   dashboard: 'Dashboard',
+  typescriptEslint: 'typescript-eslint',
 };
