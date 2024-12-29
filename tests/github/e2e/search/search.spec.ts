@@ -48,10 +48,11 @@ test.describe('Searching via Github', async () => {
     const copilotInput: Locator = page.locator(selectors.copilotInput);
     const mockText: string = 'jest';
     const copilotURL: string = '/copilot'
+    const sendBtn = page.locator("#icon-button-4c452eb6-0166-407d-89c2-deda3b923f4f")
 
     await copilotInput.click();
     await copilotInput.fill(mockText);
-    await page.getByLabel('Send').click();
+    await sendBtn.click();
     await page.keyboard.press('Enter', { delay: 250 });
 
     expect(page).toHaveURL(copilotURL)

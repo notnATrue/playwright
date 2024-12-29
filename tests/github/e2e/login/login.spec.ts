@@ -52,9 +52,8 @@ test.describe('Login into Github', async () => {
     await expect(dashboard).toBeVisible();
     const cookies: Cookie[] = await page.context().cookies();
 
-    await mkDir()
+    await mkDir();
     await writeFile(cookies);
-
   });
 
   // test('Should show alert when login with wrong cred', async ({
